@@ -47,8 +47,15 @@ isolate hotstuffs_proof = {
         call base.vote(n,b,j,jj);
     }
 
+    action restart(n:base.node) = {
+	votedb(n,B,H) := B = tree.genesis & H = heights.min;
+	votedh(n,H) := H = heights.min;
+	call base.reconfig(n);
+    }
+
     export vote
     export propose
+    export restart
 
     private {
         #invariant lock(N,B) -> base.certified(B)

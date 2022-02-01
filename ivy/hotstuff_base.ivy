@@ -3,7 +3,7 @@
 #TODO: Model certificates
 
 module total_order(t) = {
-    property [Transitivity] X:t < Y & Y < Z -> X < Z  
+    property [transitivity] X:t < Y & Y < Z -> X < Z
     property [antisymmetry] ~(X:t < Y & Y < X)
     property [totality] X:t < Y | X=Y | Y < X
 }
@@ -125,6 +125,13 @@ isolate base = {
         
         #create tree
         call tree.propose(b_new,b_prev,h);
+    }
+
+    action reconfig(n:node) = {
+	max(n) := heights.min;
+	if some x:tree.block . certified(x) maximizing tree.block_height(x) {
+            lock(n) := tree.block_height(x);
+        }
     }
 
     action vote(n:node, b:tree.block, p:tree.block, gp:tree.block) = {
